@@ -1,0 +1,30 @@
+#!/bin/sh
+
+x=1
+#GENCHAR="a b c"
+
+while [ $x -eq 1 ]
+do
+    GENCHAR=$(ls /dev/sd** 2>/dev/null | cut -c 6- | xargs printf "%s ")
+    touch /tmp/storagemount.log
+    printf "%s " ${GENCHAR} > /tmp/storagemount.log
+
+    DIFFCNT=$(diff /tmp/storagemount.log /tmp/storagemount.log | wc -l)
+    printf "%s " ${GENCHAR} > /tmp/storagemount.log
+
+    if [ ${DIFFCNT} -eq 0 ] ; then
+        printf "%s\n" "no disks detected"
+        sleep 10
+        continue
+    fi
+
+    MNTS=$(/bin/mount | /bin/grep /dev/sd | /usr/bin/awk '{ print $1 }' | cut -c 6- | xargs printf "%s %s " $(ls /dev/sd** 2>/dev/null | cut -c 6-))
+
+    for mntpoint in ${MNTS}
+    do
+        e2fsck -f -y ${mntpoint} 2>/dev/null 1>/dev/null
+        storagemount add ${mntpoint} 2>/dev/null
+        sleep 1
+    done
+    sleep 10
+done
