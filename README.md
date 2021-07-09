@@ -1,3 +1,3 @@
 # automountservice
 
-storage automount service
+This is a storage automount service designed for URUS NAS Server.
