@@ -52,6 +52,11 @@ do_mount()
 
     # Figure out a mount point to use
     LABEL=${ID_FS_LABEL}
+
+    if [[ -z "${LABEL}" ]]; then
+       LABEL=${ID_FS_PARTLABEL}
+    fi
+
     if [[ -z "${LABEL}" ]]; then
         LABEL=${DEVBASE}
     elif /bin/grep -q " /media/${LABEL} " /etc/mtab; then
@@ -68,6 +73,10 @@ do_mount()
     OPTS="rw,relatime"
 
     # File system type specific mount options
+    if [[ ${ID_FS_TYPE} == "exfat" ]]; then
+        OPTS="defaults,uid=1000,gid=1000"
+    fi
+
     if [[ ${ID_FS_TYPE} == "vfat" ]]; then
         OPTS+=",users,gid=100,umask=000,shortname=mixed,utf8=1,flush"
     fi
