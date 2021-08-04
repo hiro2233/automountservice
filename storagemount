@@ -73,7 +73,7 @@ do_mount()
     OPTS="rw,relatime"
 
     # File system type specific mount options
-    if [[ ${ID_FS_TYPE} == "exfat" ]]; then
+    if [[ ${ID_FS_TYPE} == "exfat" ]] || [[ ${ID_FS_TYPE} == "ntfs" ]]; then
         OPTS="defaults,uid=1000,gid=1000"
     fi
 
